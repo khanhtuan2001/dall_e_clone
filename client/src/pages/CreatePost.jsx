@@ -42,8 +42,29 @@ const generatingImage=async()=>{
  }
 }
 
-const handleSubmit = () => {
- 
+const handleSubmit = async (e) => {
+ e.preventDefault();
+ if(form.prompt && form.photo){
+  setloading(true);
+  try {
+    const response = await fetch('http://localhost:8080/api/v1/post',{
+
+    method: 'POST',
+    headers:{
+      'Content-Type':'application/json',
+    },
+    body: JSON.stringify(form)
+    })
+    await response.json();
+    navigate('/');
+  } catch (error) {
+    alert(error)
+  }finally{
+    setloading(false);
+  }
+ }else{
+  alert('Please enter a prompt and generate an image')
+ }
 }
 const handleChange = (e) => {
 setform({...form,[e.target.name]:e.target.value})
@@ -70,10 +91,10 @@ const handleSurpriseMe = () => {
           <FormField 
           labelName = "your name"
           type = "text"
-          name="tuan"
+          name="name"
           placeholder ="tuan"
           value={form.name}
-          handLeChange={handleChange}
+          handleChange={handleChange}
           />
            <FormField 
           labelName = "Prompt"
